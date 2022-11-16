@@ -1,0 +1,13 @@
+@model RefactoredModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h5>Code to refactor:</h5>
+    <textarea name="body" rows="10" cols="50">@Model.Body</textarea>
+    <form>
+        <button asp-action="Index">Clear</button>
+    </form>
+</div>

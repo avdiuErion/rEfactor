@@ -1,0 +1,32 @@
+{
+  "version": 2,
+  "dgSpecHash": "rSpmpUF6nmk3XJiWSC84l+lNXiGmfC0w36BDm8Nz48mI3SGKwFTd4Y/WFUDbCD7jRDglhesiVMJgUTqQgElBbw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Erion\\RiderProjects\\RefactErion\\RefactErion\\RefactErion.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Erion\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
+    "C:\\Users\\Erion\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\6.0.0\\microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",
+    "C:\\Users\\Erion\\.nuget\\packages\\microsoft.codeanalysis\\4.4.0-2.final\\microsoft.codeanalysis.4.4.0-2.final.nupkg.sha512",
+    "C:\\Users\\Erion\\.nuget\\packages\\microsoft.codeanalysis.analyzers\\3.3.3\\microsoft.codeanalysis.analyzers.3.3.3.nupkg.sha512",
+    "C:\\Users\\Erion\\.nuget\\packages\\microsoft.codeanalysis.common\\4.4.0-2.final\\microsoft.codeanalysis.common.4.4.0-2.final.nupkg.sha512",
+    "C:\\Users\\Erion\\.nuget\\packages\\microsoft.codeanalysis.csharp\\4.4.0-2.final\\microsoft.codeanalysis.csharp.4.4.0-2.final.nupkg.sha512",
+    "C:\\Users\\Erion\\.nuget\\packages\\microsoft.codeanalysis.csharp.workspaces\\4.4.0-2.final\\microsoft.codeanalysis.csharp.workspaces.4.4.0-2.final.nupkg.sha512",
+    "C:\\Users\\Erion\\.nuget\\packages\\microsoft.codeanalysis.visualbasic\\4.4.0-2.final\\microsoft.codeanalysis.visualbasic.4.4.0-2.final.nupkg.sha512",
+    "C:\\Users\\Erion\\.nuget\\packages\\microsoft.codeanalysis.visualbasic.workspaces\\4.4.0-2.final\\microsoft.codeanalysis.visualbasic.workspaces.4.4.0-2.final.nupkg.sha512",
+    "C:\\Users\\Erion\\.nuget\\packages\\microsoft.codeanalysis.workspaces.common\\4.4.0-2.final\\microsoft.codeanalysis.workspaces.common.4.4.0-2.final.nupkg.sha512",
+    "C:\\Users\\Erion\\.nuget\\packages\\system.collections.immutable\\5.0.0\\system.collections.immutable.5.0.0.nupkg.sha512",
+    "C:\\Users\\Erion\\.nuget\\packages\\system.composition\\6.0.0\\system.composition.6.0.0.nupkg.sha512",
+    "C:\\Users\\Erion\\.nuget\\packages\\system.composition.attributedmodel\\6.0.0\\system.composition.attributedmodel.6.0.0.nupkg.sha512",
+    "C:\\Users\\Erion\\.nuget\\packages\\system.composition.convention\\6.0.0\\system.composition.convention.6.0.0.nupkg.sha512",
+    "C:\\Users\\Erion\\.nuget\\packages\\system.composition.hosting\\6.0.0\\system.composition.hosting.6.0.0.nupkg.sha512",
+    "C:\\Users\\Erion\\.nuget\\packages\\system.composition.runtime\\6.0.0\\system.composition.runtime.6.0.0.nupkg.sha512",
+    "C:\\Users\\Erion\\.nuget\\packages\\system.composition.typedparts\\6.0.0\\system.composition.typedparts.6.0.0.nupkg.sha512",
+    "C:\\Users\\Erion\\.nuget\\packages\\system.io.pipelines\\6.0.1\\system.io.pipelines.6.0.1.nupkg.sha512",
+    "C:\\Users\\Erion\\.nuget\\packages\\system.memory\\4.5.4\\system.memory.4.5.4.nupkg.sha512",
+    "C:\\Users\\Erion\\.nuget\\packages\\system.reflection.metadata\\5.0.0\\system.reflection.metadata.5.0.0.nupkg.sha512",
+    "C:\\Users\\Erion\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.0.0\\system.runtime.compilerservices.unsafe.6.0.0.nupkg.sha512",
+    "C:\\Users\\Erion\\.nuget\\packages\\system.text.encoding.codepages\\6.0.0\\system.text.encoding.codepages.6.0.0.nupkg.sha512",
+    "C:\\Users\\Erion\\.nuget\\packages\\system.threading.tasks.extensions\\4.5.4\\system.threading.tasks.extensions.4.5.4.nupkg.sha512"
+  ],
+  "logs": []
+}
