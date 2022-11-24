@@ -8,7 +8,10 @@ namespace RefactErion.Models;
 public class RefactoredNodeBuilder
 {
     public SyntaxNode node = null;
-    public RefactoredNodeBuilder() { }
+
+    public RefactoredNodeBuilder()
+    {
+    }
 
     public SyntaxNode Build() => node;
 
@@ -20,39 +23,43 @@ public class RefactoredNodeBuilder
         var nodesToReplace = new List<SyntaxNode>();
         var replacementNodeMap = new Dictionary<SyntaxNode, SyntaxNode>();
 
-        foreach (LocalDeclarationStatementSyntax localDeclaration in methodDecl?.Body?.DescendantNodes().OfType<LocalDeclarationStatementSyntax>().ToList())
+        foreach (LocalDeclarationStatementSyntax localDeclaration in methodDecl?.Body?.DescendantNodes()
+                     .OfType<LocalDeclarationStatementSyntax>().ToList())
         {
             var variableName = localDeclaration.Declaration.Variables.FirstOrDefault().Identifier;
-            if (!methodDecl.Body.DescendantNodesAndTokens().ToList().Except(localDeclaration.DescendantNodesAndTokens()).ToList()
-                    .Any(x => x.IsKind(SyntaxKind.SimpleAssignmentExpression) 
+            if (!methodDecl.Body.DescendantNodesAndTokens().ToList().Except(localDeclaration.DescendantNodesAndTokens())
+                    .ToList()
+                    .Any(x => x.IsKind(SyntaxKind.SimpleAssignmentExpression)
                               && x.ChildNodesAndTokens().First().ToString().Equals(variableName.ToString())))
-                {
-                    nodesToReplace.Add(localDeclaration);
-                    SyntaxToken firstToken = localDeclaration.GetFirstToken();
-                    SyntaxTriviaList leadingTrivia = firstToken.LeadingTrivia;
-                    LocalDeclarationStatementSyntax trimmedLocal = localDeclaration.ReplaceToken(
-                        firstToken, firstToken.WithLeadingTrivia(SyntaxTriviaList.Empty));
+            {
+                nodesToReplace.Add(localDeclaration);
+                SyntaxToken firstToken = localDeclaration.GetFirstToken();
+                SyntaxTriviaList leadingTrivia = firstToken.LeadingTrivia;
+                LocalDeclarationStatementSyntax trimmedLocal = localDeclaration.ReplaceToken(
+                    firstToken, firstToken.WithLeadingTrivia(SyntaxTriviaList.Empty));
 
-                    SyntaxToken constToken = SyntaxFactory.Token(leadingTrivia, SyntaxKind.ConstKeyword, SyntaxFactory.TriviaList(SyntaxFactory.ElasticMarker));
-                    SyntaxTokenList newModifiers = trimmedLocal.Modifiers.Insert(0, constToken);
+                SyntaxToken constToken = SyntaxFactory.Token(leadingTrivia, SyntaxKind.ConstKeyword,
+                    SyntaxFactory.TriviaList(SyntaxFactory.ElasticMarker));
+                SyntaxTokenList newModifiers = trimmedLocal.Modifiers.Insert(0, constToken);
 
-                    LocalDeclarationStatementSyntax newLocal = trimmedLocal
-                        .WithModifiers(newModifiers)
-                        .WithDeclaration(localDeclaration.Declaration);
-                    
-                    LocalDeclarationStatementSyntax formattedLocal = newLocal.WithAdditionalAnnotations(Formatter.Annotation);
-                    
-                    replacementNodeMap.Add(localDeclaration, formattedLocal);
-                }
+                LocalDeclarationStatementSyntax newLocal = trimmedLocal
+                    .WithModifiers(newModifiers)
+                    .WithDeclaration(localDeclaration.Declaration);
+
+                LocalDeclarationStatementSyntax formattedLocal =
+                    newLocal.WithAdditionalAnnotations(Formatter.Annotation);
+
+                replacementNodeMap.Add(localDeclaration, formattedLocal);
+            }
         }
-        
+
         methodDecl = methodDecl?.ReplaceNodes(nodesToReplace, computeReplacementNode: (o, n) => replacementNodeMap[o]);
-                    
+
         newRoot = classNode.ReplaceNode(originalMethodDecl!, methodDecl!);
         newRoot = newRoot.NormalizeWhitespace();
 
         node = newRoot;
-        
+
         return this;
     }
 
@@ -64,7 +71,8 @@ public class RefactoredNodeBuilder
 
         foreach (var declaration in methodDecl.Body.DescendantNodes().OfType<LocalDeclarationStatementSyntax>())
         {
-            var identifier = declaration.DescendantNodes().OfType<VariableDeclaratorSyntax>().FirstOrDefault().Identifier;
+            var identifier = declaration.DescendantNodes().OfType<VariableDeclaratorSyntax>().FirstOrDefault()
+                .Identifier;
             var allNodes = methodDecl.Body.DescendantNodes().Except(declaration.DescendantNodesAndSelf()).ToList();
 
             if (!allNodes.Any(x => x.ToString().Equals(identifier.Text)))
@@ -80,10 +88,10 @@ public class RefactoredNodeBuilder
         newRoot = newRoot.NormalizeWhitespace();
 
         node = newRoot;
-        
+
         return this;
     }
-    
+
     public RefactoredNodeBuilder WithInlineTempReturn(SyntaxNode classNode, out SyntaxNode node)
     {
         var originalMethodDecl = classNode?.ChildNodes().OfType<MethodDeclarationSyntax>().FirstOrDefault();
@@ -91,50 +99,80 @@ public class RefactoredNodeBuilder
         var variableDeclarator =
             methodDecl?.Body?.DescendantNodes().OfType<VariableDeclaratorSyntax>().LastOrDefault();
         var returnStatement = methodDecl?.Body?.DescendantNodes().OfType<ReturnStatementSyntax>().First();
-        var newReturnStatement = SyntaxFactory.ReturnStatement(variableDeclarator?.Initializer?.Value);
-    
-        methodDecl = methodDecl?.ReplaceNode(returnStatement!, newReturnStatement);
-        
-        var variableDeclaratorFinal =
-            methodDecl?.Body?.DescendantNodes().OfType<VariableDeclaratorSyntax>().LastOrDefault();
+        SyntaxNode newReturnStatement = null;
+        var listToFilter = new List<SyntaxNode>();
+        listToFilter.AddRange(methodDecl.Body.DescendantNodes().OfType<VariableDeclaratorSyntax>().ToList());
+        listToFilter.AddRange(methodDecl.Body.DescendantNodes().OfType<AssignmentExpressionSyntax>().ToList());
 
-        methodDecl = methodDecl?.RemoveNode(variableDeclaratorFinal.Parent.Parent, SyntaxRemoveOptions.KeepNoTrivia);
+        var returnStatementIdentifier = returnStatement.ChildNodes().OfType<IdentifierNameSyntax>().FirstOrDefault();
+        foreach (var variable in listToFilter)
+        {
+            if (variable.IsKind(SyntaxKind.VariableDeclarator))
+            {
+                var varDeclatator = variable as VariableDeclaratorSyntax;
+                if (varDeclatator.Identifier.Text.Equals(returnStatementIdentifier.Identifier.Text))
+                {
+                    newReturnStatement = SyntaxFactory.ReturnStatement(varDeclatator?.Initializer?.Value);
+                    methodDecl = methodDecl?.ReplaceNode(returnStatement!, newReturnStatement);
+                    var declaratorAfterReplace = methodDecl.DescendantNodes().OfType<VariableDeclaratorSyntax>()
+                        .FirstOrDefault(x => x.Identifier.Text.Equals(varDeclatator.Identifier.Text));
+                    methodDecl = methodDecl.RemoveNode(declaratorAfterReplace.Parent.Parent,
+                        SyntaxRemoveOptions.KeepNoTrivia);
+                    break;
+                }
+            }
+            else
+            {
+                var varExpression = variable as AssignmentExpressionSyntax;
+                if (varExpression.Left.ToString().Equals(returnStatementIdentifier.Identifier.Text))
+                {
+                    newReturnStatement = SyntaxFactory.ReturnStatement(varExpression?.Right);
+                    methodDecl = methodDecl?.ReplaceNode(returnStatement!, newReturnStatement);
+                    var expressionAfterReplacement = methodDecl.DescendantNodes().OfType<AssignmentExpressionSyntax>()
+                        .FirstOrDefault(x => x.Left.ToString().Equals(varExpression.Left.ToString()));
+                    methodDecl = methodDecl.RemoveNode(expressionAfterReplacement.Parent, SyntaxRemoveOptions.KeepNoTrivia);
+                    break;
+                }
+            }
+        }
+        
         methodDecl = methodDecl?.WithAdditionalAnnotations(Formatter.Annotation);
 
         var newRoot = classNode.ReplaceNode(originalMethodDecl!, methodDecl!);
         newRoot = newRoot.NormalizeWhitespace();
 
         node = newRoot;
-        
+
         return this;
     }
-    
+
     public RefactoredNodeBuilder WithNoUnusedParameters(SyntaxNode classNode, out SyntaxNode node)
     {
         var originalMethodDecl = classNode?.ChildNodes().OfType<MethodDeclarationSyntax>().FirstOrDefault();
         var methodDecl = originalMethodDecl;
         var parameterList = originalMethodDecl.ParameterList;
         var parametersToRemove = new List<ParameterSyntax>();
-        
+
         foreach (var parameter in methodDecl.ParameterList.Parameters)
         {
             var allNodes = methodDecl.Body.DescendantNodes();
-        
-            if (!allNodes.OfType<IdentifierNameSyntax>().ToList().Any(x => x.Identifier.Text.Equals(parameter.Identifier.Text)))
+
+            if (!allNodes.OfType<IdentifierNameSyntax>().ToList()
+                    .Any(x => x.Identifier.Text.Equals(parameter.Identifier.Text)))
             {
                 parametersToRemove.Add(parameter);
             }
         }
-        
+
         parameterList = parameterList.RemoveNodes(parametersToRemove, SyntaxRemoveOptions.KeepNoTrivia);
         methodDecl = methodDecl.WithParameterList(parameterList);
         methodDecl = methodDecl?.WithAdditionalAnnotations(Formatter.Annotation);
-        
+
         var newRoot = classNode.ReplaceNode(originalMethodDecl!, methodDecl!);
         newRoot = newRoot.NormalizeWhitespace();
 
         node = newRoot;
-        
+
         return this;
     }
 }
