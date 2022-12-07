@@ -1,6 +1,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.CodeAnalysis.Editing;
 using Microsoft.CodeAnalysis.Formatting;
 
 namespace RefactErion.Models;
@@ -61,6 +62,42 @@ public class RefactoringService
         return newRoot;
     }
 
+    public SyntaxNode SplitInlineTemp(SyntaxNode classNode)
+    {
+        var originalMethodDecl = classNode?.ChildNodes().OfType<MethodDeclarationSyntax>().FirstOrDefault();
+        var methodDecl = originalMethodDecl;
+        var nodesToRename = new List<SyntaxNode>();
+        var replacementNodeMap = new Dictionary<SyntaxNode, SyntaxNode>(nodesToRename.Count());
+
+        for (int i = 0; i < methodDecl?.Body?.Statements.OfType<ExpressionStatementSyntax>().Count(); i++)
+        {
+            var nodeToCompare = methodDecl.Body.Statements.OfType<ExpressionStatementSyntax>().ToList()[i];
+            for (int j = 0; j < methodDecl.Body?.Statements.OfType<LocalDeclarationStatementSyntax>().Count(); j++)
+            {
+                var variableDeclaratorToCompare =
+                    methodDecl.Body?.Statements.OfType<LocalDeclarationStatementSyntax>().ToList()[j].ChildNodes()
+                        .OfType<VariableDeclarationSyntax>().FirstOrDefault()?.ChildNodes()
+                        .OfType<VariableDeclaratorSyntax>().FirstOrDefault()?.Identifier.Text;
+                if (nodeToCompare?.Expression?.ChildNodes().OfType<IdentifierNameSyntax>().FirstOrDefault()?.Identifier
+                        .Text == variableDeclaratorToCompare)
+                {
+                    nodesToRename.Add(nodeToCompare!);
+                    replacementNodeMap.Add(nodeToCompare!, SyntaxGenerator.GetGenerator(new AdhocWorkspace(), LanguageNames.CSharp)
+                        .LocalDeclarationStatement(" variable" + (i + 1),
+                            nodeToCompare?.Expression?.ChildNodes().OfType<LiteralExpressionSyntax>().FirstOrDefault()
+                                .WithLeadingTrivia()));
+                }
+            }
+        }
+
+        methodDecl = methodDecl.ReplaceNodes(nodesToRename, computeReplacementNode: (o, n) => replacementNodeMap[o]);
+        methodDecl = methodDecl.WithAdditionalAnnotations(Formatter.Annotation);
+
+        var newRoot = classNode.ReplaceNode(originalMethodDecl, methodDecl);
+        newRoot = newRoot.NormalizeWhitespace();
+
+        return newRoot;
+    }
     public SyntaxNode RemoveUnusedVariables(SyntaxNode classNode)
     {
         var originalMethodDecl = classNode?.ChildNodes().OfType<MethodDeclarationSyntax>().FirstOrDefault();

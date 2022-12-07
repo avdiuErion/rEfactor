@@ -47,6 +47,9 @@ public class HomeController : Controller
             case "makeConsts":
                 rootToReturn = refactoringService.MakeConsts(classNode).ToFullString();
                 break;
+            case "splitInline":
+                rootToReturn = refactoringService.SplitInlineTemp(classNode).ToFullString();
+                break;
             case "removeVariables":
                 rootToReturn = refactoringService.MakeConsts(classNode).ToFullString();
                 break;

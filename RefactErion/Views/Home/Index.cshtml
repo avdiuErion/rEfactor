@@ -16,6 +16,7 @@
     <select class="form-control" id="refaktorimi" name="refactoringType" onchange="myfunction(this);">
         <option>Zgjedh refaktorimin</option> 
         <option value="makeConsts">Create constants</option> 
+        <option value="splitInline">Split inline</option> 
         <option value="removeVariables">Remove unused variables</option> 
         <option value="inlineTemp">Inline temp</option> 
         <option value="removeParams">Remove parameter</option>
@@ -41,6 +42,9 @@
         if(select.value == "makeConsts"){
             message = "Applying this type of refactoring will make all variables with the same value throughout the method constants," 
                 +"that is add the const keyword to the variable.";
+        }
+        if(select.value == "splitInline"){
+            message = "splitInline.";
         }
         if(select.value == "removeVariables"){
             message = "Applying this type of refactoring will remove all unused variables in the method.";
