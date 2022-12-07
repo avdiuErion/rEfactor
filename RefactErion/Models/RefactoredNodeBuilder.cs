@@ -5,17 +5,17 @@ using Microsoft.CodeAnalysis.Formatting;
 
 namespace RefactErion.Models;
 
-public class RefactoredNodeBuilder
+public class RefactoringService
 {
     public SyntaxNode node = null;
 
-    public RefactoredNodeBuilder()
+    public RefactoringService()
     {
     }
 
     public SyntaxNode Build() => node;
 
-    public RefactoredNodeBuilder WithConsts(SyntaxNode classNode, out SyntaxNode node)
+    public SyntaxNode MakeConsts(SyntaxNode classNode)
     {
         var originalMethodDecl = classNode?.ChildNodes().OfType<MethodDeclarationSyntax>().FirstOrDefault();
         SyntaxNode newRoot = null;
@@ -58,12 +58,10 @@ public class RefactoredNodeBuilder
         newRoot = classNode.ReplaceNode(originalMethodDecl!, methodDecl!);
         newRoot = newRoot.NormalizeWhitespace();
 
-        node = newRoot;
-
-        return this;
+        return newRoot;
     }
 
-    public RefactoredNodeBuilder WithNoUnusedVariables(SyntaxNode classNode, out SyntaxNode node)
+    public SyntaxNode RemoveUnusedVariables(SyntaxNode classNode)
     {
         var originalMethodDecl = classNode?.ChildNodes().OfType<MethodDeclarationSyntax>().FirstOrDefault();
         var methodDecl = originalMethodDecl;
@@ -87,12 +85,10 @@ public class RefactoredNodeBuilder
         var newRoot = classNode.ReplaceNode(originalMethodDecl!, methodDecl!);
         newRoot = newRoot.NormalizeWhitespace();
 
-        node = newRoot;
-
-        return this;
+        return newRoot;
     }
 
-    public RefactoredNodeBuilder WithInlineTempReturn(SyntaxNode classNode, out SyntaxNode node)
+    public SyntaxNode ReturnInlineTemp(SyntaxNode classNode)
     {
         var originalMethodDecl = classNode?.ChildNodes().OfType<MethodDeclarationSyntax>().FirstOrDefault();
         var methodDecl = originalMethodDecl;
@@ -141,12 +137,10 @@ public class RefactoredNodeBuilder
         var newRoot = classNode.ReplaceNode(originalMethodDecl!, methodDecl!);
         newRoot = newRoot.NormalizeWhitespace();
 
-        node = newRoot;
-
-        return this;
+        return newRoot;
     }
 
-    public RefactoredNodeBuilder WithNoUnusedParameters(SyntaxNode classNode, out SyntaxNode node)
+    public SyntaxNode RemoveUnusedParameters(SyntaxNode classNode)
     {
         var originalMethodDecl = classNode?.ChildNodes().OfType<MethodDeclarationSyntax>().FirstOrDefault();
         var methodDecl = originalMethodDecl;
@@ -171,8 +165,6 @@ public class RefactoredNodeBuilder
         var newRoot = classNode.ReplaceNode(originalMethodDecl!, methodDecl!);
         newRoot = newRoot.NormalizeWhitespace();
 
-        node = newRoot;
-
-        return this;
+        return newRoot;
     }
 }

@@ -4,11 +4,56 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h5>Code to refactor:</h5>
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+    
     <form method="post" asp-action="Refactor">
+<div class="text-center">
+    <h5>Choose one of the refactoring methods:</h5>
+    <select class="form-control" id="refaktorimi" name="refactoringType" onchange="myfunction(this);">
+        <option>Zgjedh refaktorimin</option> 
+        <option value="makeConsts">Create constants</option> 
+        <option value="removeVariables">Remove unused variables</option> 
+        <option value="inlineTemp">Inline temp</option> 
+        <option value="removeParams">Remove parameter</option>
+    </select>
+    <br>
+    <br>
+    <h5>Code to refactor:</h5>
+    <div id="submitForm" style="display:none">
         <textarea name="body" rows="10" cols="50"></textarea>
         <br/>
         <button type="submit">Submit</button>
-    </form>
+   
+        </div>
 </div>
+        </form>
+    </body>
+ 
+</html>
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script>
+    function myfunction(select) {
+        var message = "";
+        if(select.value == "makeConsts"){
+            message = "Applying this type of refactoring will make all variables with the same value throughout the method constants," 
+                +"that is add the const keyword to the variable.";
+        }
+        if(select.value == "removeVariables"){
+            message = "Applying this type of refactoring will remove all unused variables in the method.";
+        }
+        if(select.value == "inlineTemp"){
+            message = "Applying this type of refactoring will replace the variable of expression to return with the expression itself\n"
+                    +"https://refactoring.guru/inline-temp;";
+        }
+        if(select.value == "removeParams"){
+            message = "Applying this type of refactoring will remove all unused parameters.";
+        }
+
+        alert(message);
+        document.getElementById('submitForm').style.display = "initial";
+    }
+</script>

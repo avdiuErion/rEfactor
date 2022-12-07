@@ -35,17 +35,28 @@ public class HomeController : Controller
     }
 
     [HttpPost]
-    public IActionResult Refactor(string body)
+    public IActionResult Refactor(string body, string refactoringType)
     {
-        SyntaxNode rootToReturn;
+        var rootToReturn = "";
         var classNode = GetClass(body);
 
-        new RefactoredNodeBuilder()
-            .WithConsts(classNode, out rootToReturn)
-            .WithNoUnusedVariables(rootToReturn, out rootToReturn)
-            .WithInlineTempReturn(rootToReturn, out rootToReturn)
-            .WithNoUnusedParameters(rootToReturn, out rootToReturn)
-            .Build();
+        var refactoringService = new RefactoringService();
+
+        switch (refactoringType)
+        {
+            case "makeConsts":
+                rootToReturn = refactoringService.MakeConsts(classNode).ToFullString();
+                break;
+            case "removeVariables":
+                rootToReturn = refactoringService.MakeConsts(classNode).ToFullString();
+                break;
+            case "inlineTemp":
+                rootToReturn = refactoringService.MakeConsts(classNode).ToFullString();
+                break;
+            case "removeParams":
+                rootToReturn = refactoringService.MakeConsts(classNode).ToFullString();
+                break;
+        }
         
         return View("Refactored", new RefactoredModel() { Body = rootToReturn.ToString() });
     }
