@@ -51,17 +51,17 @@ public class HomeController : Controller
                 rootToReturn = refactoringService.SplitInlineTemp(classNode).ToFullString();
                 break;
             case "removeVariables":
-                rootToReturn = refactoringService.MakeConsts(classNode).ToFullString();
+                rootToReturn = refactoringService.RemoveUnusedVariables(classNode).ToFullString();
                 break;
             case "inlineTemp":
-                rootToReturn = refactoringService.MakeConsts(classNode).ToFullString();
+                rootToReturn = refactoringService.ReturnInlineTemp(classNode).ToFullString();
                 break;
             case "removeParams":
-                rootToReturn = refactoringService.MakeConsts(classNode).ToFullString();
+                rootToReturn = refactoringService.RemoveUnusedParameters(classNode).ToFullString();
                 break;
         }
         
-        return View("Refactored", new RefactoredModel() { Body = rootToReturn.ToString() });
+        return View("Refactored", new RefactoredModel() { Body = rootToReturn });
     }
     
     private SyntaxNode GetClass(string body)

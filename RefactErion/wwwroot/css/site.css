@@ -15,4 +15,19 @@ html {
 
 body {
   margin-bottom: 60px;
+  background-image: url('../background.jpg');
+  color: white !important;
+  font-family: fantasy !important;
+}
+
+.header{
+  background-image: url('../background.jpg');
+}
+
+#teksti{
+  color: black !important;
+}
+
+.paragrafi{
+  text-align: center;
 }

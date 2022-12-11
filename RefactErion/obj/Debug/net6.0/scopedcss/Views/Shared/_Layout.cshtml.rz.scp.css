@@ -46,3 +46,8 @@ button.accept-policy[b-2e2k20p355] {
   white-space: nowrap;
   line-height: 60px;
 }
+
+header[b-2e2k20p355] {
+  background-image: url('../../wwwroot/background.jpg');
+  color: red !important;
+}

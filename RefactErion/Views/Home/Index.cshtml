@@ -1,63 +1,108 @@
 ﻿@model RefactoredModel
 
 @{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "E-Refactor";
 }
 
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.18/dist/css/bootstrap-select.min.css">
 </head>
 <body>
-    
-    <form method="post" asp-action="Refactor">
-<div class="text-center">
-    <h5>Choose one of the refactoring methods:</h5>
-    <select class="form-control" id="refaktorimi" name="refactoringType" onchange="myfunction(this);">
-        <option>Zgjedh refaktorimin</option> 
-        <option value="makeConsts">Create constants</option> 
-        <option value="splitInline">Split inline</option> 
-        <option value="removeVariables">Remove unused variables</option> 
-        <option value="inlineTemp">Inline temp</option> 
-        <option value="removeParams">Remove parameter</option>
-    </select>
-    <br>
-    <br>
-    <h5>Code to refactor:</h5>
-    <div id="submitForm" style="display:none">
-        <textarea name="body" rows="10" cols="50"></textarea>
-        <br/>
-        <button type="submit">Submit</button>
-   
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="teksti"></p>
+                <a target="smth" id="myLink" style="color: cornflowerblue">More details</a>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="showTextBox()">Try an example</button>
+            </div>
         </div>
+    </div>
 </div>
-        </form>
-    </body>
- 
-</html>
-<script src="~/lib/jquery/dist/jquery.js"></script>
-<script>
-    function myfunction(select) {
-        var message = "";
-        if(select.value == "makeConsts"){
-            message = "Applying this type of refactoring will make all variables with the same value throughout the method constants," 
-                +"that is add the const keyword to the variable.";
-        }
-        if(select.value == "splitInline"){
-            message = "splitInline.";
-        }
-        if(select.value == "removeVariables"){
-            message = "Applying this type of refactoring will remove all unused variables in the method.";
-        }
-        if(select.value == "inlineTemp"){
-            message = "Applying this type of refactoring will replace the variable of expression to return with the expression itself\n"
-                    +"https://refactoring.guru/inline-temp;";
-        }
-        if(select.value == "removeParams"){
-            message = "Applying this type of refactoring will remove all unused parameters.";
-        }
+<div style="margin-bottom: 30px;">
+    <p class="paragrafi">Refactoring is the process of restructuring code, while not changing its original functionality.
+        <br/>
+    With E-Refactor you will be able to try real-time examples of some of the known refactoring techniques.</p>
+</div>
+<form method="post" asp-action="Refactor">
+    <div class="text-center">
+        <h5>Choose one of the refactoring methods:</h5>
+        <select class="form-control selectpicker" id="change" name="refactoringType" onchange="hideTextBox()">
+            <option>Choose refactoring</option>
+            <option value="makeConsts" data-toggle="modal">Create constants</option>
+            <option value="splitInline" data-toggle="modal">Split inline</option>
+            <option value="removeVariables">Remove unused variables</option>
+            <option value="inlineTemp">Inline temp</option>
+            <option value="removeParams">Remove parameter</option>
+        </select>
+        <br>
+        <br>
+        <div id="textArea" style="display:none">
+            <h5>Code to refactor:</h5>
+            <div>
+                <textarea name="body" rows="10" cols="50"></textarea>
+                <br/>
+                <button type="submit">Submit</button>
+            </div>
+        </div>
+    </div>
+</form>
 
-        alert(message);
-        document.getElementById('submitForm').style.display = "initial";
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script>   
+    $('#change').change(function(){
+      var title = $(this).val();
+      var url = "";
+      console.log(title);
+      var message = "";
+      if(title == "makeConsts"){
+          message = "This refactoring will make all variables that don't change value in the method body constants.";
+      }
+      if(title == "splitInline"){
+          message = "Instead of having one variable store various values, extract a new variable to hold a new value."
+          url = "https://refactoring.guru/split-temporary-variable";
+      }
+      if(title == "removeVariables"){
+         message = "Applying this type of refactoring will remove all unused variables in the method.";
+      }
+      if(title == "inlineTemp"){
+         message = "Applying this type of refactoring will replace the variable of expression to return with the expression itself\n"
+         url = "https://refactoring.guru/inline-temp";
+      }
+      if(title == "removeParams"){
+         message = "Applying this type of refactoring will remove all unused parameters.";
+         url = "https://refactoring.guru/remove-parameter";
+      }
+              
+      $('#teksti').html(message);
+      $('#myLink').attr("href", url);
+      $('.modal').modal('show');
+    });
+    
+    function showTextBox(){
+        document.getElementById('textArea').style.display = "initial";
+    }
+    
+    function hideTextBox(){
+       document.getElementById('textArea').style.display = "none";
     }
 </script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.18/dist/js/bootstrap-select.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.18/dist/js/i18n/defaults-*.min.js"></script>
+</body>
+
+</html>
