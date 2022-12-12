@@ -68,7 +68,7 @@
       console.log(title);
       var message = "";
       if(title == "makeConsts"){
-          message = "This refactoring will make all variables that don't change value in the method body constants.";
+          message = "This refactoring will add the const keyword to all variables that don't change value in the method body.";
       }
       if(title == "splitInline"){
           message = "Instead of having one variable store various values, extract a new variable to hold a new value."
@@ -86,7 +86,7 @@
          url = "https://refactoring.guru/remove-parameter";
       }
       if(title == "applyAll"){
-         message = "With apply all, E-Refactor will apply all refactoring techniques available in the system to your code.";
+         message = "With apply all, E-Refactor will apply to your code all refactoring techniques available in the system.";
       }
               
       $('#teksti').html(message);
