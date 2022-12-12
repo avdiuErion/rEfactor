@@ -37,31 +37,37 @@ public class HomeController : Controller
     [HttpPost]
     public IActionResult Refactor(string body, string refactoringType)
     {
-        var rootToReturn = "";
+        SyntaxNode rootToReturn = null;
         var classNode = GetClass(body);
-
-        var refactoringService = new RefactoringService();
 
         switch (refactoringType)
         {
             case "makeConsts":
-                rootToReturn = refactoringService.MakeConsts(classNode).ToFullString();
+                new RefactoredNodeBuilder().MakeConsts(classNode, out rootToReturn).Build();
                 break;
             case "splitInline":
-                rootToReturn = refactoringService.SplitInlineTemp(classNode).ToFullString();
+                new RefactoredNodeBuilder().SplitInlineTemp(classNode, out rootToReturn).Build();
                 break;
             case "removeVariables":
-                rootToReturn = refactoringService.RemoveUnusedVariables(classNode).ToFullString();
+                new RefactoredNodeBuilder().RemoveUnusedVariables(classNode, out rootToReturn).Build();
                 break;
             case "inlineTemp":
-                rootToReturn = refactoringService.ReturnInlineTemp(classNode).ToFullString();
+                new RefactoredNodeBuilder().ReturnInlineTemp(classNode, out rootToReturn).Build();
                 break;
             case "removeParams":
-                rootToReturn = refactoringService.RemoveUnusedParameters(classNode).ToFullString();
+                new RefactoredNodeBuilder().RemoveUnusedParameters(classNode, out rootToReturn).Build();
+                break;
+            default:
+                new RefactoredNodeBuilder()
+                    .MakeConsts(classNode, out rootToReturn)
+                    .RemoveUnusedVariables(rootToReturn, out rootToReturn)
+                    .ReturnInlineTemp(rootToReturn, out rootToReturn)
+                    .RemoveUnusedParameters(rootToReturn, out rootToReturn)
+                    .Build();
                 break;
         }
         
-        return View("Refactored", new RefactoredModel() { Body = rootToReturn });
+        return View("Refactored", new RefactoredModel() { Body = rootToReturn.ToString() });
     }
     
     private SyntaxNode GetClass(string body)

@@ -22,7 +22,7 @@
             </div>
             <div class="modal-body">
                 <p id="teksti"></p>
-                <a target="smth" id="myLink" style="color: cornflowerblue">More details</a>
+                <a target="smth" id="myLink" style="color: cornflowerblue; display: none">More details</a>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="showTextBox()">Try an example</button>
@@ -45,6 +45,7 @@
             <option value="removeVariables">Remove unused variables</option>
             <option value="inlineTemp">Inline temp</option>
             <option value="removeParams">Remove parameter</option>
+            <option value="applyAll">Apply all</option>
         </select>
         <br>
         <br>
@@ -84,9 +85,17 @@
          message = "Applying this type of refactoring will remove all unused parameters.";
          url = "https://refactoring.guru/remove-parameter";
       }
+      if(title == "applyAll"){
+         message = "With apply all, E-Refactor will apply all refactoring techniques available in the system to your code.";
+      }
               
       $('#teksti').html(message);
-      $('#myLink').attr("href", url);
+      if (url != ""){
+          document.getElementById('myLink').style.display = "initial";
+         $('#myLink').attr("href", url);
+      }else{
+          document.getElementById('myLink').style.display = "none";
+      }
       $('.modal').modal('show');
     });
     

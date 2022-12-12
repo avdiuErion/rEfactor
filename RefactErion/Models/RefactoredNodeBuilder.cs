@@ -6,17 +6,17 @@ using Microsoft.CodeAnalysis.Formatting;
 
 namespace RefactErion.Models;
 
-public class RefactoringService
+public class RefactoredNodeBuilder
 {
     public SyntaxNode node = null;
 
-    public RefactoringService()
+    public RefactoredNodeBuilder()
     {
     }
 
     public SyntaxNode Build() => node;
 
-    public SyntaxNode MakeConsts(SyntaxNode classNode)
+    public RefactoredNodeBuilder  MakeConsts(SyntaxNode classNode, out SyntaxNode node)
     {
         var originalMethodDecl = classNode?.ChildNodes().OfType<MethodDeclarationSyntax>().FirstOrDefault();
         SyntaxNode newRoot = null;
@@ -59,10 +59,12 @@ public class RefactoringService
         newRoot = classNode.ReplaceNode(originalMethodDecl!, methodDecl!);
         newRoot = newRoot.NormalizeWhitespace();
 
-        return newRoot;
+        node = newRoot;
+
+        return this;
     }
 
-    public SyntaxNode SplitInlineTemp(SyntaxNode classNode)
+    public RefactoredNodeBuilder SplitInlineTemp(SyntaxNode classNode, out SyntaxNode node)
     {
         var originalMethodDecl = classNode?.ChildNodes().OfType<MethodDeclarationSyntax>().FirstOrDefault();
         var methodDecl = originalMethodDecl;
@@ -96,9 +98,12 @@ public class RefactoringService
         var newRoot = classNode.ReplaceNode(originalMethodDecl, methodDecl);
         newRoot = newRoot.NormalizeWhitespace();
 
-        return newRoot;
+        node = newRoot;
+
+        return this;
     }
-    public SyntaxNode RemoveUnusedVariables(SyntaxNode classNode)
+    
+    public RefactoredNodeBuilder RemoveUnusedVariables(SyntaxNode classNode, out SyntaxNode node)
     {
         var originalMethodDecl = classNode?.ChildNodes().OfType<MethodDeclarationSyntax>().FirstOrDefault();
         var methodDecl = originalMethodDecl;
@@ -122,15 +127,15 @@ public class RefactoringService
         var newRoot = classNode.ReplaceNode(originalMethodDecl!, methodDecl!);
         newRoot = newRoot.NormalizeWhitespace();
 
-        return newRoot;
+        node = newRoot;
+
+        return this;
     }
 
-    public SyntaxNode ReturnInlineTemp(SyntaxNode classNode)
+    public RefactoredNodeBuilder ReturnInlineTemp(SyntaxNode classNode, out SyntaxNode node)
     {
         var originalMethodDecl = classNode?.ChildNodes().OfType<MethodDeclarationSyntax>().FirstOrDefault();
         var methodDecl = originalMethodDecl;
-        var variableDeclarator =
-            methodDecl?.Body?.DescendantNodes().OfType<VariableDeclaratorSyntax>().LastOrDefault();
         var returnStatement = methodDecl?.Body?.DescendantNodes().OfType<ReturnStatementSyntax>().First();
         SyntaxNode newReturnStatement = null;
         var listToFilter = new List<SyntaxNode>();
@@ -174,10 +179,12 @@ public class RefactoringService
         var newRoot = classNode.ReplaceNode(originalMethodDecl!, methodDecl!);
         newRoot = newRoot.NormalizeWhitespace();
 
-        return newRoot;
+        node = newRoot;
+
+        return this;
     }
 
-    public SyntaxNode RemoveUnusedParameters(SyntaxNode classNode)
+    public RefactoredNodeBuilder RemoveUnusedParameters(SyntaxNode classNode, out SyntaxNode node)
     {
         var originalMethodDecl = classNode?.ChildNodes().OfType<MethodDeclarationSyntax>().FirstOrDefault();
         var methodDecl = originalMethodDecl;
@@ -202,6 +209,8 @@ public class RefactoringService
         var newRoot = classNode.ReplaceNode(originalMethodDecl!, methodDecl!);
         newRoot = newRoot.NormalizeWhitespace();
 
-        return newRoot;
+        node = newRoot;
+
+        return this;
     }
 }
