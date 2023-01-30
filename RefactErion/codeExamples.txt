@@ -1,0 +1,80 @@
+Working examples
+
+Create constants:
+
+public class Klasa
+{
+public boolean Metoda(double x)
+ {
+  double x = 0;
+  var y = 2;
+  int z = y + 1;
+  return z;
+ }
+}
+
+Split Inline:
+
+public class Klasa
+{
+public boolean Metoda()
+ {
+  double x = 0;
+  x = 1;
+ 
+ return x + 2;
+ }
+}
+
+Remove unused variables:
+
+public class Klasa
+{
+public boolean Metoda()
+ {
+  double x = 5;
+  var y = 0;
+  int z = x + 1;
+
+ return z;
+ }
+}
+
+Inline temp:
+
+public class Klasa
+{
+public boolean Metoda()
+ {
+  double x = 5;
+  int y = x + 2;
+ 
+ return y;
+ }
+}
+
+Remove parameter:
+
+public class Klasa
+{
+public boolean Metoda(int x, string s)
+ {
+  var y = x + 1;
+        
+  return y;
+ }
+}
+
+Apply all:
+public class Klasa
+{
+public boolean Metoda(int x, string s)
+ {
+  x = 20;
+  var y = x + 1;
+  int k = 0;
+  int z = y + 50;
+       
+  return z;
+ }
+}
